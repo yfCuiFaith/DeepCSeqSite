@@ -13,8 +13,6 @@ flags.DEFINE_string('testset_dir', '', 'The dir of test set')
 
 model_dir = 'width_k5/'
 
-model_name = 'model.ckpt'
-
 SITA_dir = 'DataSet/SITA/'
 SITA_EX1_dir = 'DataSet/SITA_EX1/'
 SITA_EX2_dir = 'DataSet/SITA_EX2/'
@@ -49,7 +47,7 @@ def getche():
 	return buf
 
 def main(_):
-	dcs_si = Model(model_dir, model_name, batch_size, softmax_thr)
+	dcs_si = Model(model_dir, batch_size, softmax_thr)
 
 	sess = Session()
 

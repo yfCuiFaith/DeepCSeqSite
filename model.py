@@ -38,9 +38,9 @@ class Model:
 
 		return pred_analy
 
-	def __init__(self, model_dir, model_name, batch_size, softmax_thr):
+	def __init__(self, model_dir, batch_size, softmax_thr):
 		self.model_dir = model_dir
-		self.model_name = model_name
+		self.model_name = tf.train.latest_checkpoint(model_dir)
 		self.batch_size = batch_size
 		self.softmax_thr = softmax_thr
 
@@ -51,9 +51,8 @@ class Model:
 
 	def restore_parameters(self, sess):
 		saver = tf.train.Saver()
-		model_path = '%s%s' % (self.model_dir, self.model_name)
-
-		saver.restore(sess, model_path)
+		
+		saver.restore(sess, self.model_name)
 		print('\nModel has been loaded.\n')
 
 	def test(self, sess, dataset):
