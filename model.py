@@ -2,9 +2,9 @@ import tensorflow as tf
 from network import Inference
 from tf_lib import PredictionResult
 from seq_dataset import SeqDataSet
-from tf_toolkit import ReadDataSet
-from tf_toolkit import Statistic
-from tf_toolkit import GetMCC
+from toolkit import ReadDataSet
+from toolkit import Statistic
+from toolkit import GetMCC
 
 from network import keep_prob
 
