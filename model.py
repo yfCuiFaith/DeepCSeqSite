@@ -1,12 +1,11 @@
 import tensorflow as tf
-from network import Inference
+import sys
+import importlib
 from tf_lib import PredictionResult
 from seq_dataset import SeqDataSet
 from toolkit import ReadDataSet
 from toolkit import Statistic
 from toolkit import GetMCC
-
-from network import keep_prob
 
 class Model:
 	def mask_padding(self, src, lens, batch_size):
@@ -17,13 +16,16 @@ class Model:
 		return res
 
 	def define_model(self):
+		with tf.variable_scope('param'):
+			self.keep_prob = tf.placeholder(tf.float32, name = 'keep_prob')
+
 		with tf.name_scope('input'):
 			input_x = tf.placeholder(tf.float32, [self.batch_size, None], name = 'fature_map')
 			input_y = tf.placeholder(tf.float32, [self.batch_size, None, 2], name = 'label')
 			ly = tf.placeholder(tf.int32, [self.batch_size], name = 'ly')
 
 		with tf.name_scope('forward'):
-			x_ = Inference(input_x, self.batch_size)
+			x_ = self.network.Inference(input_x, self.batch_size, self.keep_prob)
 			x_ = tf.reshape(x_, [self.batch_size, -1, 2])
 			re_x_ = self.mask_padding(x_, ly, self.batch_size)
 
@@ -43,6 +45,9 @@ class Model:
 		self.model_name = tf.train.latest_checkpoint(model_dir)
 		self.batch_size = batch_size
 		self.softmax_thr = softmax_thr
+
+		sys.path.append(model_dir)
+		self.network = importlib.import_module('network')
 
 		self.input_x, self.input_y, self.len_y, self.pred_y \
 			= self.define_model()
@@ -74,7 +79,7 @@ class Model:
 			input_dict[self.input_x] = batch_x
 			input_dict[self.input_y] = batch_y
 			input_dict[self.len_y] = len_y
-			input_dict[keep_prob] = 1.0
+			input_dict[self.keep_prob] = 1.0
 
 			pred_rw_acc = sess.run(self.pred_analy, feed_dict = input_dict)
 

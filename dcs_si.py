@@ -1,22 +1,27 @@
 import tensorflow as tf
-import os
 import sys
-import termios
 from model import Model
+from toolkit import getche
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 
 flags.DEFINE_boolean('interact', True, \
 	'If True, the program will be executed interactively')
+flags.DEFINE_string('model', 'DCS-SI-std', \
+	'Options: DCS-SI-std, DCS-SI-k9, DCS-SI-k9a')
 flags.DEFINE_string('testset_dir', '', 'The dir of test set')
 
-model_dir = 'width_k5/'
+model_root_dir = 'Models'
 
-SITA_dir = 'DataSet/SITA/'
-SITA_EX1_dir = 'DataSet/SITA_EX1/'
-SITA_EX2_dir = 'DataSet/SITA_EX2/'
-SITA_EX3_dir = 'DataSet/SITA_EX3/'
+model_dict = {'DCS-SI-std': 'std/', \
+			'DCS-SI-k9': 'k9/', \
+			'DCS-SI-k9a': 'k9a/'}
+
+dataset_root_dir = 'DataSet'
+
+dataset_list = ['SITA', 'SITA_EX1', 'SITA_EX2', 'SITA_EX3']
+
 
 batch_size = 1
 
@@ -28,25 +33,14 @@ def Session():
 	sess = tf.Session(config = config)
 	return sess 
 
-def getche():
-	fd = sys.stdin.fileno()
-
-	old_ttyinfo = termios.tcgetattr(fd)
-
-	new_ttyinfo = old_ttyinfo[:]
-
-	new_ttyinfo[3] &= ~termios.ICANON
-	new_ttyinfo[3] &= ~termios.ECHO
-
-	termios.tcsetattr(fd, termios.TCSANOW, new_ttyinfo)
-
-	buf = os.read(fd, 1)
-
-	termios.tcsetattr(fd, termios.TCSANOW, old_ttyinfo)
-
-	return buf
-
 def main(_):
+	if(model_dict.has_key(FLAGS.model) != True):
+		print('Model %s is not existed.' % FLAGS.model)
+		print('Options: DCS-SI-std, DCS-SI-k9, DCS-SI-k9a\n')
+		sys.exit()
+
+	model_dir = 'Models/%s' % model_dict[FLAGS.model]
+
 	dcs_si = Model(model_dir, batch_size, softmax_thr)
 
 	sess = Session()
@@ -54,7 +48,7 @@ def main(_):
 	dcs_si.restore_parameters(sess)
 
 	while(True):
-		print('Please input one of the following section id:')
+		print('Please input one of the following option id:')
 		print('1. Test SITA')
 		print('2. Test SITA-EX1')
 		print('3. Test SITA-EX2')
@@ -64,19 +58,23 @@ def main(_):
 		buf = getche().strip()
 
 		if(buf == '1'):
-			dcs_si.benchmark(sess, SITA_dir, 'SITA')
+			dataset_dir = '%s/SITA/' % dataset_root_dir
+			dcs_si.benchmark(sess, dataset_dir, 'SITA')
 			continue
 
 		if(buf == '2'):
-			dcs_si.benchmark(sess, SITA_EX1_dir, 'SITA_EX1')
+			dataset_dir = '%s/SITA_EX1/' % dataset_root_dir
+			dcs_si.benchmark(sess, dataset_dir, 'SITA_EX1')
 			continue
 
 		if(buf == '3'):
-			dcs_si.benchmark(sess, SITA_EX2_dir, 'SITA_EX2')
+			dataset_dir = '%s/SITA_EX2/' % dataset_root_dir
+			dcs_si.benchmark(sess, dataset_dir, 'SITA_EX2')
 			continue
 
 		if(buf == '4'):
-			dcs_si.benchmark(sess, SITA_EX3_dir, 'SITA_EX3')
+			dataset_dir = '%s/SITA_EX3/' % dataset_root_dir
+			dcs_si.benchmark(sess, dataset_dir, 'SITA_EX3')
 			continue
 
 		if(buf == '5'):

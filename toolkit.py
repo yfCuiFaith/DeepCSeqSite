@@ -1,14 +1,34 @@
 import numpy as np
 import math
+import os
+import termios
 import time
-import gc
+import sys
 
 def CurrentTime():
 	return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
+def getche():
+	fd = sys.stdin.fileno()
+
+	old_ttyinfo = termios.tcgetattr(fd)
+
+	new_ttyinfo = old_ttyinfo[:]
+
+	new_ttyinfo[3] &= ~termios.ICANON
+	new_ttyinfo[3] &= ~termios.ECHO
+
+	termios.tcsetattr(fd, termios.TCSANOW, new_ttyinfo)
+
+	buf = os.read(fd, 1)
+
+	termios.tcsetattr(fd, termios.TCSANOW, old_ttyinfo)
+
+	return buf
+
 def ReadDataSet(data_dir, feature_file, label_file, dataset_type, dataset_name = None):
 	if(dataset_name != None):
-		print('Reading %s dataset...' % (dataset_name))
+		print('\nReading %s dataset...' % (dataset_name))
 
 	dataset = dataset_type(data_dir + feature_file, \
 								data_dir + label_file)
@@ -16,7 +36,7 @@ def ReadDataSet(data_dir, feature_file, label_file, dataset_type, dataset_name =
 	print('%s size = %d' % (dataset_name, dataset.number))
 
 	if(dataset_name != None):
-		print('Reading %s dataset complete.' % (dataset_name))
+		print('Reading %s dataset complete.\n' % (dataset_name))
 
 	return dataset
 
