@@ -5,7 +5,8 @@ The current version is a demo for DCS-SI. The formal version will be released la
 ## Requirments
 TensorFlow >= 1.5.0
 ## Usage
-Enter the dir of DCS-SI. Then you can get help information by this command:
+Enter the dir of DCS-SI. If needed, you can get help information by this command:
 ```bash
 python dcs_si.py -h
 ```
+The demo contains three networks with different architecture. 
