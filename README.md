@@ -25,4 +25,4 @@ We provides all the test sets used in our paper.<br>
 The test sets include SITA, SITA-EX1, SITA-EX2 and SITA-EX3.<br>
 After loading a version of the model, you can easily test the model on the test sets with the guide of program. 
 ## License
-DeepCSeqSite is [GPL 3.0 licensed](https://github.com/yfCuiFaith/DeepCSeqSite/blob/master/LICENSE)
+DeepCSeqSite is [GPL 3.0-licensed](https://github.com/yfCuiFaith/DeepCSeqSite/blob/master/LICENSE)
