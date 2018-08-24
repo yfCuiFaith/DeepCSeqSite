@@ -9,4 +9,7 @@ Enter the dir of DCS-SI. If needed, you can get help information by this command
 ```bash
 python dcs_si.py -h
 ```
-The demo contains three networks with different architecture. 
+The demo contains three versions of model which differ in their network. The versions include DCS-SI-std, DCS-SI-k9 and DCS-SI-k9a. For example, you can run DCS-SI-std by:
+```bash
+python dcs_si.py --model DCS-SI-std
+```
