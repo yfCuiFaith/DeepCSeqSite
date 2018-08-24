@@ -6,11 +6,8 @@ from toolkit import getche
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 
-flags.DEFINE_boolean('interact', True, \
-	'If True, the program will be executed interactively')
 flags.DEFINE_string('model', 'DCS-SI-std', \
 	'Options: DCS-SI-std, DCS-SI-k9, DCS-SI-k9a')
-flags.DEFINE_string('testset_dir', '', 'The dir of test set')
 
 model_root_dir = 'Models'
 

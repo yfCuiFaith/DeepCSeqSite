@@ -12,6 +12,21 @@ from tf_lib import ResidualBlock
 from tf_lib import PlainBlock
 from tf_lib import NormBlock
 
+# The training process consists of three learning strategies,
+# which are implemented with tf.train.exponential_decay.
+#
+# 1. global_step from 0 to 19999: 
+# learning_rate = 0.00001, decay_steps = 5000,
+# decay_rate = 0.95, staircase = True
+#
+# 2. global_step from 20000 to 99999:
+# learning_rate = 0.0001, decay_steps = 1000
+# decay_rate = 0.96, staircase = True
+#
+# 3. global_step over 99999:
+# learning_rate = 0.0002, decay_steps = 2000
+# decay_rate = 0.98, staircase = True
+
 kernel_width = 5 # Height
 amino_dim = 30
 std_in_channel = 256
