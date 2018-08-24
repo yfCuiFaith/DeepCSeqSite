@@ -5,7 +5,8 @@ The formal version will be released later.<br>
 
 # Quick Start
 ## Requirments
-TensorFlow >= 1.5.0
+TensorFlow >= 1.5.0<br>
+We strongly recommend you execute DCS-SI with GPU.
 ## Usage
 Enter the root dir of DCS-SI. If needed, you can get help information by this command:
 ```bash
