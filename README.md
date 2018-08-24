@@ -13,3 +13,5 @@ The demo contains three versions of model which differ in their network. The ver
 ```bash
 python dcs_si.py --model DCS-SI-std
 ```
+DCS-SI-std is the default version of DCS-SI. The kernel width in DCS-SI is k = 5.<br>
+k9 means the kernel width k = 9, and 'a' in k9a means the model is trained on the augmented training set.
