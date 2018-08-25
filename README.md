@@ -5,7 +5,7 @@ The formal version will be released later.<br>
 
 # Quick Start
 ## Requirments
-Python = 2.7.x
+Python = 2.7.x<br>
 1.5.0 <= TensorFlow <= 1.10.0<br>
 We strongly recommend you execute DCS-SI with GPU.
 ## Usage
