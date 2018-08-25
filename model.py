@@ -67,6 +67,8 @@ class Model:
 		total_iter = 0
 
 		dataset.SetSignal()
+		dataset_size = dataset.number
+		complete_count = dataset_size - dataset.avail_num
 
 		while(True):
 			batch_x, batch_y, len_x, len_y = dataset.NextRestrictedPaddingBatch(self.batch_size)
@@ -98,10 +100,14 @@ class Model:
 			total_mcc += mcc
 			total_iter += 1
 
-		print('Precision = %.2f%%' % (total_prec * 100 / total_iter))
-		print('Recall = %.2f%%' % (total_reca * 100 / total_iter))
-		print('MCC = %.3f' % (total_mcc / total_iter))
-		print('\n')
+			complete_count = dataset_size - dataset.avail_num
+			print('\rComplete: %.2f%%' % (complete_count * 100.0 / dataset_size)),
+
+		print('\n\nResult:\nPrecision = %.2f%% Recall = %.2f%% MCC = %.3f' % \
+			(total_prec * 100 / total_iter, \
+			total_reca * 100 / total_iter, \
+			total_mcc / total_iter))
+		print('')
 
 	def benchmark(self, sess, dataset_dir, dataset_name):
 		dataset = ReadDataSet(dataset_dir, 'data.feat', 'data.lab', SeqDataSet, dataset_name)
