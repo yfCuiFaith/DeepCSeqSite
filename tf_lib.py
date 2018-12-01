@@ -166,3 +166,70 @@ def NormBlock(input_tensor, block_name):
 		block_glu = GLU(block_ln)
 	return block_glu
 
+# input_tensor: [n, m, 1, 2] (generally)
+def SeqLeftShift(input_tensor):
+	tensor_shape = input_tensor.get_shape().as_list()
+	dy_tensor_shape = tf.shape(input_tensor)
+	new_tensor_shape = [tensor_shape[0], dy_tensor_shape[1] - 1, \
+						tensor_shape[2], tensor_shape[3]]
+
+	output_tensor = tf.slice(input_tensor, [0, 1, 0, 0], new_tensor_shape)
+	return tf.pad(output_tensor, [[0, 0], [0, 1], [0, 0], [0, 0]])
+
+def SeqRightShift(input_tensor):
+	tensor_shape = input_tensor.get_shape().as_list()
+	dy_tensor_shape = tf.shape(input_tensor)
+	new_tensor_shape = [tensor_shape[0], dy_tensor_shape[1] - 1, \
+						tensor_shape[2], tensor_shape[3]]
+
+	output_tensor = tf.slice(input_tensor, [0, 0, 0, 0], new_tensor_shape)
+	return tf.pad(output_tensor, [[0, 0], [1, 0], [0, 0], [0, 0]])
+
+def DevConv(input_tensor, filter_shape, direction, name):
+	padding = filter_shape[0] - 1
+
+	if(direction == 'L'):
+		pad_shape = [[0, 0], [padding, 0], [0, 0], [0, 0]]
+	elif(direction == 'R'):
+		pad_shape = [[0, 0], [0, padding], [0, 0], [0, 0]]
+	else:
+		print('Direction parameter error.')
+
+	input_tensor = tf.pad(input_tensor, pad_shape)
+	conv = Conv(input_tensor, filter_shape, name = name)
+	return conv
+
+def DevPlainBlock(input_tensor, filter_shape, direction, block_name):
+	with tf.name_scope(block_name):
+		input_tensor_shape = input_tensor.get_shape().as_list()
+		batch_size = input_tensor_shape[0]
+
+		conv_name = '%s_conv' % block_name
+		ln_name = '%s_ln' % block_name
+
+		block_input = tf.reshape(input_tensor, [-1, input_tensor_shape[3]])
+		block_ln = LayerNorm(block_input, scope = ln_name)
+		block_ln = tf.reshape(block_ln, [batch_size, -1, 1, input_tensor_shape[3]])
+		block_glu = GLU(block_ln)
+
+		block_conv = DevConv(block_glu, filter_shape, direction, name = conv_name)
+
+	return block_conv
+
+def DevResidualBlock(input_tensor, filter_shape, direction, block_name):
+	with tf.name_scope(block_name):
+		input_tensor_shape = input_tensor.get_shape().as_list()
+		batch_size = input_tensor_shape[0]
+
+		conv_name = '%s_conv' % block_name
+		ln_name = '%s_ln' % block_name
+
+		block_input = tf.reshape(input_tensor, [-1, input_tensor_shape[3]])
+		block_ln = LayerNorm(block_input, scope = ln_name)
+		block_ln = tf.reshape(block_ln, [batch_size, -1, 1, input_tensor_shape[3]])
+		block_glu = GLU(block_ln)
+		
+		block_conv = DevConv(block_glu, filter_shape, direction, name = conv_name)
+
+		block_output = input_tensor + block_conv
+	return block_output

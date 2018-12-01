@@ -1,19 +1,21 @@
 import tensorflow as tf
 import sys
 from model import Model
+from model import EnModel
 from toolkit import getche
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 
 flags.DEFINE_string('model', 'DCS-SI-std', \
-	'Options: DCS-SI-std, DCS-SI-k9, DCS-SI-k9a')
+	'Options: DCS-SI-std, DCS-SI-k9, DCS-SI-k9a, DCS-SI-en')
 
 model_root_dir = 'Models'
 
 model_dict = {'DCS-SI-std': 'std/', \
 			'DCS-SI-k9': 'k9/', \
-			'DCS-SI-k9a': 'k9a/'}
+			'DCS-SI-k9a': 'k9a/', \
+			'DCS-SI-en': 'en/'}
 
 dataset_root_dir = 'DataSet'
 
@@ -33,12 +35,15 @@ def Session():
 def main(_):
 	if(model_dict.has_key(FLAGS.model) != True):
 		print('Model %s is not existed.' % FLAGS.model)
-		print('Options: DCS-SI-std, DCS-SI-k9, DCS-SI-k9a\n')
+		print('Options: DCS-SI-std, DCS-SI-k9, DCS-SI-k9a, DCS-SI-en\n')
 		sys.exit()
 
 	model_dir = 'Models/%s' % model_dict[FLAGS.model]
 
-	dcs_si = Model(model_dir, batch_size, softmax_thr)
+	if(model_dir == 'Models/en/'):
+		dcs_si = EnModel(model_dir, batch_size, softmax_thr)
+	else:
+		dcs_si = Model(model_dir, batch_size, softmax_thr)
 
 	sess = Session()
 

@@ -42,6 +42,9 @@ class SeqDataSet:
 		else:
 			self.number = len(self.label)
 
+	def Lengths(self):
+		return [len(seq) for seq in self.label]
+	
 	def Fill(self, src_seqs, filler):
 		seqs_lens = [len(seq) for seq in src_seqs]
 
