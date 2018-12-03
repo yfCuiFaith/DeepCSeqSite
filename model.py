@@ -103,6 +103,7 @@ class Model:
 
 			complete_count = dataset_size - dataset.avail_num
 			print('\rComplete: %.2f%%' % (complete_count * 100.0 / dataset_size)),
+			sys.stdout.flush()
 
 		print('\n\nResult:\nPrecision = %.2f%% Recall = %.2f%% MCC = %.3f' % \
 			(total_prec * 100 / total_iter, \
@@ -203,10 +204,6 @@ class EnModel:
 				input_dict[self.len_y] = len_y
 				input_dict[self.keep_prob] = 1.0
 				input_dict[self.history] = hist
-
-				if(epoch_number == 0):
-					input_dict[self.info_l] = np.zeros((self.batch_size, len(batch_y[0]), 1, 256))
-					input_dict[self.info_r] = np.zeros((self.batch_size, len(batch_y[0]), 1, 256))
 				
 				pred_rw_acc, last_output = sess.run([self.pred_analy, self.top_y], feed_dict = input_dict)
 				
@@ -228,7 +225,7 @@ class EnModel:
 				total_iter += 1
 
 				complete_count = dataset_size - dataset.avail_num
-				print('\rComplete: %.2f%%' % (complete_count * 100.0 / dataset_size)),
+				print('\r[Round %d]Complete: %.2f%%  ' % (t, complete_count * 100.0 / dataset_size)),
 				sys.stdout.flush()
 
 		print('\n\nResult:\nPrecision = %.2f%% Recall = %.2f%% MCC = %.3f' % \

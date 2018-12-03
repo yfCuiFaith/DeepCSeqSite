@@ -20,8 +20,7 @@ std_in_channel = 256
 std_out_channel = std_in_channel * 2
 
 std_filter_shape = [kernel_width, 1, std_in_channel, std_out_channel]
-attn_filter_shape = [kernel_width, 1, std_in_channel * 2, std_in_channel * 2]
-hist_filter_shape = [3, 1, 32, 32 * 2]
+hist_filter_shape = [3, 1, 2, std_out_channel]
 
 #padding = kernel_width / 2
 
@@ -68,7 +67,7 @@ def Inference(x, y, batch_size, keep_prob):
 
 	with tf.name_scope('summary'):
 		info_l = SeqRightShift(y)
-		info_l = DevConv(info_l, [3, 1, 2, 512], 'L', 'L_conv0')
+		info_l = DevConv(info_l, hist_filter_shape, 'L', 'L_conv0')
 
 		for i in range(0, 2):
 			block_scope = str.format('L_block%d' % (i))
@@ -78,7 +77,7 @@ def Inference(x, y, batch_size, keep_prob):
 		info_l = NormBlock(info_l, 'L_top')
 		
 		info_r = SeqLeftShift(y)
-		info_r = DevConv(info_r, [3, 1, 2, 512], 'R', 'R_conv0')
+		info_r = DevConv(info_r, hist_filter_shape, 'R', 'R_conv0')
 
 		for i in range(0, 2):
 			block_scope = str.format('R_block%d' % (i))
