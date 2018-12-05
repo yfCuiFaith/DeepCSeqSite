@@ -36,8 +36,6 @@ def Inference(x, y, batch_size, keep_prob):
 			conv0_input = tf.pad(x, [[0, 0], [1, 1], [0, 0], [0, 0]])
 			conv0 = Conv(conv0_input, conv0_filter_shape, name = 'trans_conv')
 
-			print conv0
-
 		buffer_tensor = conv0
 
 		with tf.name_scope('stage1'):
@@ -46,10 +44,10 @@ def Inference(x, y, batch_size, keep_prob):
 
 				buffer_tensor = \
 					ResidualBlock(buffer_tensor, std_filter_shape, block_scope)
-				print buffer_tensor
+				#print buffer_tensor
 			buffer_tensor = \
 				PlainBlock(buffer_tensor, std_filter_shape, 'stage1_top')
-			print buffer_tensor
+			#print buffer_tensor
 
 		with tf.name_scope('stage2'):
 			for i in range(0, 10):
@@ -57,11 +55,11 @@ def Inference(x, y, batch_size, keep_prob):
 
 				buffer_tensor = \
 					ResidualBlock(buffer_tensor, std_filter_shape, block_scope)
-				print buffer_tensor
+				#print buffer_tensor
 				
 			buffer_tensor = \
 				NormBlock(buffer_tensor, 'stage2_top')
-			print buffer_tensor
+			#print buffer_tensor
 		
 		encoder_output = buffer_tensor
 
@@ -93,12 +91,12 @@ def Inference(x, y, batch_size, keep_prob):
 		fc0 = Conv(decoder_output, fc0_filter_shape, bias = True, name = 'fc0_conv')
 		fc0_relu = tf.nn.relu(fc0)
 		fc0_drop = tf.nn.dropout(fc0_relu, keep_prob)
-		print fc0_drop
+		#print fc0_drop
 
 		fc1_filter_shape = [1, 1, std_in_channel, 2]
 		fc1 = Conv(fc0_drop, fc1_filter_shape, bias = True, name = 'fc1_conv')
 		fc1_relu = tf.nn.relu(fc1)
-		print fc1_relu
+		#print fc1_relu
 
 	return fc1_relu, info_l, info_r
 
