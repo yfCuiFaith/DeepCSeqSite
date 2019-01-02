@@ -27,5 +27,8 @@ DCS-SI-en is the enhanced version of DCS-SI, which executes forward propagation 
 We provides all the test sets used in our paper.<br>
 The test sets include SITA, SITA-EX1, SITA-EX2 and SITA-EX3.<br>
 After loading a version of the model, you can easily test the model on the test sets with the guide of program. 
-## License
+# Training a New Model
+The source code and notes of the network architecture can be found in Models directory.<br>
+Complete source code of training will be released later.
+# License
 DeepCSeqSite is [GPL 3.0-licensed](https://github.com/yfCuiFaith/DeepCSeqSite/blob/master/LICENSE)
