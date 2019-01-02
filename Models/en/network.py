@@ -14,6 +14,7 @@ from tf_lib import DevConv
 from tf_lib import DevResidualBlock
 from tf_lib import DevPlainBlock
 
+stage_depth = 10
 kernel_width = 5 # Height
 amino_dim = 30
 std_in_channel = 256
@@ -39,7 +40,7 @@ def Inference(x, y, batch_size, keep_prob):
 		buffer_tensor = conv0
 
 		with tf.name_scope('stage1'):
-			for i in range(0, 10):
+			for i in range(0, stage_depth):
 				block_scope = str.format('stage1_block%d' % (i))
 
 				buffer_tensor = \
@@ -50,7 +51,7 @@ def Inference(x, y, batch_size, keep_prob):
 			#print buffer_tensor
 
 		with tf.name_scope('stage2'):
-			for i in range(0, 10):
+			for i in range(0, stage_depth):
 				block_scope = str.format('stage2_block%d' % (i))
 
 				buffer_tensor = \
