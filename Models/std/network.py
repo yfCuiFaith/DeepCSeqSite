@@ -26,10 +26,14 @@ from tf_lib import NormBlock
 # 3. global_step over 99999:
 # learning_rate = 0.0002, decay_steps = 2000
 # decay_rate = 0.98, staircase = True
+#
+# For training a new model,
+# the recommanded value for N, k, and c are 10, 5 and 256.
 
-kernel_width = 5 # Height
+stage_depth = 10 # the number of BasicBlocks in a Stage (N)
+kernel_width = 5 # Height (k)
 amino_dim = 30
-std_in_channel = 256
+std_in_channel = 256 # (c)
 std_out_channel = std_in_channel * 2
 
 std_filter_shape = [kernel_width, 1, std_in_channel, std_out_channel]
@@ -52,7 +56,7 @@ def Inference(x, batch_size, keep_prob):
 	
 	with tf.name_scope('stage1'):
 		buffer_tensor = conv0
-		for i in range(0, 10):
+		for i in range(0, stage_depth):
 			block_scope = str.format('stage1_block%d' % (i))
 
 			buffer_tensor = \
@@ -65,7 +69,7 @@ def Inference(x, batch_size, keep_prob):
 	encoder_output = buffer_tensor
 
 	with tf.name_scope('stage2'):
-		for i in range(0, 10):
+		for i in range(0, stage_depth):
 			block_scope = str.format('stage2_block%d' % (i))
 
 			buffer_tensor = \
