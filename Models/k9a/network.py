@@ -12,6 +12,7 @@ from tf_lib import ResidualBlock
 from tf_lib import PlainBlock
 from tf_lib import NormBlock
 
+stage_depth = 10
 kernel_width = 9 # Height
 amino_dim = 30
 std_in_channel = 256
@@ -37,7 +38,7 @@ def Inference(x, batch_size, keep_prob):
 	
 	with tf.name_scope('stage1'):
 		buffer_tensor = conv0
-		for i in range(0, 10):
+		for i in range(0, stage_depth):
 			block_scope = str.format('stage1_block%d' % (i))
 
 			buffer_tensor = \
@@ -50,7 +51,7 @@ def Inference(x, batch_size, keep_prob):
 	encoder_output = buffer_tensor
 
 	with tf.name_scope('stage2'):
-		for i in range(0, 10):
+		for i in range(0, stage_depth):
 			block_scope = str.format('stage2_block%d' % (i))
 
 			buffer_tensor = \
